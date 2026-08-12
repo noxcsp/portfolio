@@ -10,7 +10,7 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
   return (
     <div className="items-start gap-1 sm:gap-12 text-sm sm:grid sm:grid-cols-[160px_1fr]">
       {/* Left Column: Duration (Fixed column width) */}
-      <div className="pt-0.5 text-left text-xs font-medium text-muted-foreground/80 sm:text-sm">
+      <div className="pt-0.5 text-left text-xs font-medium text-muted-foreground sm:text-sm">
         {duration}
       </div>
 
@@ -25,7 +25,7 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
           {company}
         </p>
         {/* Row 3: Location */}
-        <p className="text-xs text-muted-foreground/80">
+        <p className="text-xs text-muted-foreground">
           {location}
         </p>
       </div>
