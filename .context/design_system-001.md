@@ -40,8 +40,8 @@ This document outlines the visual identity, color tokens, typography scale, comp
 ### C. Timeline & Experience Track (Bryllim Style)
 
 * **Line Style:** 1px continuous vertical border (`border-l border-border/80 ml-4 md:ml-8`).
-* **Node Indicator:** Small monoline outer ring with primary color center dot (`w-3 h-3 rounded-full bg-primary border-4 border-background -left-[6.5px] relative`).
-* **Content Card:** Minimal padding, subtle hover effect, transparent background with `border border-border/50` on hover.
+* **Node Indicator:** Small monoline outer ring with primary foreground center dot (`w-3 h-3 rounded-full bg-foreground border-4 border-background -left-[6.5px] relative`).
+* **Skill Pills:** Small pill with a subtle dashed or solid monoline border, rounded corners (`rounded-[0.625rem]` or `rounded-full`), and minimal internal padding (`px-2.5 py-1 text-xs font-mono bg-muted/40 border border-dashed border-border/80 text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors inline-flex items-center gap-1.5`). The icon (e.g., React logo) is rendered on the left at a compact size (`w-3.5 h-3.5 shrink-0`).
 
 ---
 
