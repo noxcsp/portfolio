@@ -47,7 +47,7 @@ export default function Hero() {
 
         <div className="text-light space-y-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
           <p>
-            I'm a full-stack developer leveraging AI-assisted workflows
+            I&apos;m a full-stack developer leveraging AI-assisted workflows
             alongside my core stack in React, Next.js, React Native, and Node.js
             to build modern web and mobile applications. I am actively seeking
             software engineering opportunities and am eager to adapt quickly to
