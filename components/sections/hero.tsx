@@ -39,7 +39,7 @@ export default function Hero() {
         </div>
 
         <div>
-          <h1 className="text-xl font-normal tracking-tight text-foreground sm:text-3xl md:text-4xl">
+          <h1 className="text-2xl font-normal tracking-tight text-foreground sm:text-3xl md:text-4xl">
             Full-Stack Web Developer
             <span className="text-muted-foreground"> &mdash; MERN</span>
           </h1>

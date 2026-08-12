@@ -5,7 +5,7 @@ export default function Experience() {
   return (
     <section className="w-full py-4 sm:py-6">
       <div className="flex flex-col gap-5 sm:gap-6">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">
+        <h2 className="text-xl font-normal tracking-tight text-foreground sm:text-3xl">
           Experience
         </h2>
         <div className="flex flex-col gap-6">
