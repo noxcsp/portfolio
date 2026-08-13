@@ -28,7 +28,7 @@ export default function RootLayout({
           <div className="relative flex min-h-screen w-full justify-center">
             <LightRays
               raysOrigin="top-center"
-              raysColor="#ffffff"
+              raysColor="var(--foreground)"
               raysSpeed={1}
               lightSpread={1}
               rayLength={2}
