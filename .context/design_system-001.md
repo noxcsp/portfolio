@@ -50,7 +50,7 @@ This document outlines the visual identity, color tokens, typography scale, comp
 | Role / Element | Font Size | Font Weight | Font Color | Tracking & Leading |
 | :--- | :--- | :--- | :--- | :--- |
 | **Hero Name / H1** | `text-2xl sm:text-3xl md:text-4xl` | `font-normal` | `text-foreground` | `tracking-tight leading-tight` |
-| **Position / Subtitle (H2/H3)** | `text-xl sm:text-3xl` | `font-normal` | `text-muted-foreground` or `text-primary` | `tracking-normal leading-snug` |
+| **Position / Subtitle (H2/H3)** | `text-xl sm:text-3xl` | `font-normal` | `text-muted-foreground` | `tracking-normal leading-snug` |
 | **Intro / Body Text** | `text-sm sm:text-base` | `font-normal` | `text-muted-foreground` | `leading-relaxed` |
 | **Captions & Meta Tags** | `text-xs sm:text-sm` | `font-medium` | `text-muted-foreground/80` | `tracking-wide` |
 
