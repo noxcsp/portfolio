@@ -1,8 +1,7 @@
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
 import { EXPERIENCES } from "@/constants/experience"
 import { HiArrowLongLeft } from "react-icons/hi2"
-import { SkillPill } from "@/components/skill-pill"
+import { SkillPill } from "@/components/SkillPill"
 
 export default function ExperiencePage() {
   return (

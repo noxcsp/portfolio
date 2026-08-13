@@ -1,4 +1,4 @@
-import ProjectCard from "@/components/project-card"
+import ProjectCard from "@/components/ProjectCard"
 import { SAMPLE_PROJECTS } from "@/constants/projects"
 
 export default function Projects() {

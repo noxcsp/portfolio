@@ -1,5 +1,5 @@
 import { CERTIFICATIONS } from "@/constants/certifications"
-import CertificationCard from "@/components/certificationCard"
+import CertificationCard from "@/components/CertificationCard"
 
 export default function Certifications() {
   if (!CERTIFICATIONS || CERTIFICATIONS.length === 0) return null

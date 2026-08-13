@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Marquee } from "@/components/ui/marquee"
-import { SkillPill } from "@/components/skill-pill"
+import { SkillPill } from "@/components/SkillPill"
 import { getTechIcon } from "@/components/tech-icon-list"
 import {
   MARQUEE_ROW_1,

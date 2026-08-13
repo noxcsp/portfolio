@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { EXPERIENCES } from "@/constants/experience"
-import ExperienceCard from "@/components/experienceCard"
+import ExperienceCard from "@/components/ExperienceCard"
 import { HiArrowLongRight } from "react-icons/hi2"
 
 export default function Experience() {
