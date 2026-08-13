@@ -4,6 +4,7 @@ import Experience from "@/components/sections/experience"
 import Education from "@/components/sections/education"
 import Projects from "@/components/sections/projects"
 import Certifications from "@/components/sections/certifications"
+import GithubActivity from "@/components/sections/github-activity"
 
 export default function Page() {
   return (
@@ -11,10 +12,12 @@ export default function Page() {
       <Hero />
       <Experience />
       <Projects />
-      <Certifications />
       <Technologies />
+      <Certifications />
       <Education />
+      <GithubActivity />
     </main>
   )
 }
+
 
