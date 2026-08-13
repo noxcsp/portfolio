@@ -2,6 +2,7 @@ import Hero from "@/components/sections/hero"
 import Technologies from "@/components/sections/technologies"
 import Experience from "@/components/sections/experience"
 import Projects from "@/components/sections/projects"
+import Certifications from "@/components/sections/certifications"
 
 export default function Page() {
   return (
@@ -9,6 +10,7 @@ export default function Page() {
       <Hero />
       <Experience />
       <Projects />
+      <Certifications />
       <Technologies />
     </main>
   )

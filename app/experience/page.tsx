@@ -6,7 +6,7 @@ import { SkillPill } from "@/components/skill-pill"
 
 export default function ExperiencePage() {
   return (
-    <main className="relative z-10 mx-auto flex w-full max-w-2xl min-w-0 flex-col gap-6 p-4 text-sm leading-loose sm:p-6">
+    <main className="relative z-10 mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-6 p-4 text-sm leading-loose sm:p-6">
       {/* Header & Back Navigation */}
       <div className="flex flex-col gap-3 py-4 sm:py-6">
         <Link

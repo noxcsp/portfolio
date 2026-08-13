@@ -82,7 +82,7 @@ To maintain visual consistency across all pages and section components, adhere s
 
 #### 1. Page Shell (`app/page.tsx`)
 ```tsx
-<main className="relative z-10 mx-auto flex w-full max-w-2xl min-w-0 flex-col gap-4 p-4 text-sm leading-loose sm:p-6">
+<main className="relative z-10 mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-4 p-4 text-sm leading-loose sm:p-6">
   {/* Section components */}
 </main>
 ```
