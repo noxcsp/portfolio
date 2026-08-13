@@ -29,7 +29,7 @@ export function FloatingNavDock() {
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
-      <Dock className="h-14 px-3 gap-1.5 border-border/60 bg-background/80 backdrop-blur-md">
+      <Dock className="h-14 px-3 gap-1.5 border-none bg-background/50 backdrop-blur-md">
         <DockIcon tooltip="Home">
           <Link
             href="/"
