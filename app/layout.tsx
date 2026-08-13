@@ -27,7 +27,21 @@ export default function RootLayout({
         <ThemeProvider>
           <div className="relative flex min-h-screen w-full justify-center">
             <LightRays
-              raysOrigin="top-center"
+              raysOrigin="top-left"
+              raysColor="var(--foreground)"
+              raysSpeed={1}
+              lightSpread={1}
+              rayLength={2}
+              followMouse={true}
+              mouseInfluence={0.1}
+              noiseAmount={0}
+              distortion={0}
+              pulsating={false}
+              fadeDistance={0.5}
+              saturation={1}
+            />
+            <LightRays
+              raysOrigin="top-right"
               raysColor="var(--foreground)"
               raysSpeed={1}
               lightSpread={1}

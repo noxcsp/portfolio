@@ -2,6 +2,7 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { EXPERIENCES } from "@/constants/experience"
 import { HiArrowLongLeft } from "react-icons/hi2"
+import { SkillPill } from "@/components/skill-pill"
 
 export default function ExperiencePage() {
   return (
@@ -24,7 +25,7 @@ export default function ExperiencePage() {
         </p>
       </div>
 
-      {/* Bryllim-Style Timeline Track */}
+      {/* Timeline Track */}
       <div className="relative ml-3 flex flex-col gap-10 border-l border-border/80 py-2 sm:ml-6">
         {EXPERIENCES.map((item) => (
           <div
@@ -69,12 +70,7 @@ export default function ExperiencePage() {
             {item.skills && item.skills.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-1">
                 {item.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="inline-flex items-center gap-1.5 rounded-[0.625rem] border border-dashed border-border/80 bg-muted/40 px-2.5 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
-                  >
-                    {skill}
-                  </span>
+                  <SkillPill key={skill} name={skill} />
                 ))}
               </div>
             )}
