@@ -2,7 +2,7 @@ import { Geist, Geist_Mono, Manrope } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import LightRays from "@/components/LightRays"
+import LightRays from "@/components/reactbits/LightRays"
 import { cn } from "@/lib/utils"
 
 const manropeHeading = Manrope({ subsets: ["latin"], variable: "--font-heading" })
