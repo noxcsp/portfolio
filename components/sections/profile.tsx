@@ -1,0 +1,105 @@
+"use client"
+
+import { useState } from "react"
+import Image from "next/image"
+import { BadgeCheck, GraduationCap, Mail, Copy, Check } from "lucide-react"
+
+export default function Profile() {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText("seanpayabyab17@gmail.com")
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error("Failed to copy email:", err)
+    }
+  }
+
+  return (
+    <section className="w-full py-4 sm:py-6">
+      <div className="flex flex-col gap-5 sm:gap-6">
+        <div className="flex items-center gap-4 sm:gap-5">
+          <div className="relative h-36 w-36 shrink-0 overflow-hidden rounded-full border border-border shadow-sm sm:h-40 sm:w-40">
+            <Image
+              src="/profile.png"
+              alt="Clark Sean Payabyab"
+              width={160}
+              height={160}
+              priority
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="flex flex-col justify-center gap-1.5">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+                Clark Sean Payabyab
+              </span>
+              <BadgeCheck
+                className="h-5 w-5 shrink-0 fill-sky-600 text-background"
+                aria-label="Verified"
+              />
+            </div>
+            <a
+              href="https://www.facebook.com/share/1K2hkJR1V6/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex w-fit items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground sm:text-sm"
+            >
+              <GraduationCap className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
+              <span className="font-medium group-hover:underline">NU MOA</span>
+            </a>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground sm:text-sm">
+              <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <a
+                href="mailto:seanpayabyab17@gmail.com"
+                className="font-medium transition-colors hover:text-foreground hover:underline"
+              >
+                seanpayabyab17@gmail.com
+              </a>
+              <div className="relative inline-flex items-center">
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="rounded-md p-1 text-muted-foreground transition-all hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  aria-label="Copy email address"
+                  title="Copy email to clipboard"
+                >
+                  {copied ? (
+                    <Check className="h-3.5 w-3.5 text-emerald-500" />
+                  ) : (
+                    <Copy className="h-3.5 w-3.5" />
+                  )}
+                </button>
+                {copied && (
+                  <span className="absolute left-1/2 -top-7 -translate-x-1/2 whitespace-nowrap rounded-md border border-border bg-popover px-2 py-0.5 text-[10px] font-medium text-popover-foreground shadow-md animate-in fade-in zoom-in-95 duration-150">
+                    Copied!
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h1 className="text-2xl font-normal tracking-tight text-foreground sm:text-3xl md:text-4xl">
+            Full-Stack Web Developer
+            <span className="text-muted-foreground"> &mdash; MERN</span>
+          </h1>
+        </div>
+
+        <div className="text-light space-y-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+          <p>
+            I&apos;m a full-stack developer leveraging AI-assisted workflows
+            alongside my core stack in React, Next.js, React Native, and Node.js
+            to build modern web and mobile applications. I am actively seeking
+            software engineering opportunities and am eager to adapt quickly to
+            new technologies, embrace fast-paced environments, and contribute to
+            production-grade software.
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
