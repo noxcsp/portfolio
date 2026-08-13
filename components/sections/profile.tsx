@@ -1,7 +1,22 @@
-import Image from "next/image"
-import { BadgeCheck, GraduationCap } from "lucide-react"
+"use client"
 
-export default function Hero() {
+import { useState } from "react"
+import Image from "next/image"
+import { BadgeCheck, GraduationCap, Mail, Copy, Check } from "lucide-react"
+
+export default function Profile() {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText("seanpayabyab17@gmail.com")
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error("Failed to copy email:", err)
+    }
+  }
+
   return (
     <section className="w-full py-4 sm:py-6">
       <div className="flex flex-col gap-5 sm:gap-6">
@@ -16,7 +31,7 @@ export default function Hero() {
               className="h-full w-full object-cover"
             />
           </div>
-          <div className="flex flex-col justify-center gap-1">
+          <div className="flex flex-col justify-center gap-1.5">
             <div className="flex items-center gap-1.5">
               <span className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
                 Clark Sean Payabyab
@@ -35,6 +50,35 @@ export default function Hero() {
               <GraduationCap className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
               <span className="font-medium group-hover:underline">NU MOA</span>
             </a>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground sm:text-sm">
+              <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <a
+                href="mailto:seanpayabyab17@gmail.com"
+                className="font-medium transition-colors hover:text-foreground hover:underline"
+              >
+                seanpayabyab17@gmail.com
+              </a>
+              <div className="relative inline-flex items-center">
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="rounded-md p-1 text-muted-foreground transition-all hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  aria-label="Copy email address"
+                  title="Copy email to clipboard"
+                >
+                  {copied ? (
+                    <Check className="h-3.5 w-3.5 text-emerald-500" />
+                  ) : (
+                    <Copy className="h-3.5 w-3.5" />
+                  )}
+                </button>
+                {copied && (
+                  <span className="absolute left-1/2 -top-7 -translate-x-1/2 whitespace-nowrap rounded-md border border-border bg-popover px-2 py-0.5 text-[10px] font-medium text-popover-foreground shadow-md animate-in fade-in zoom-in-95 duration-150">
+                    Copied!
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
