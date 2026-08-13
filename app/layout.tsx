@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Geist, Geist_Mono, Manrope } from "next/font/google"
 
 import "./globals.css"
@@ -11,6 +12,46 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://clarkpayabyab.com"),
+  title: {
+    default: "Clark Sean Payabyab — Full-Stack Developer | MERN",
+    template: "%s | Clark Sean Payabyab",
+  },
+  description:
+    "Full-stack developer leveraging AI-assisted workflows alongside React, Next.js, React Native, and Node.js to build modern web and mobile applications.",
+  authors: [{ name: "Clark Sean Payabyab", url: "https://github.com/noxcsp" }],
+  creator: "Clark Sean Payabyab",
+  icons: {
+    icon: "/profile.png",
+    shortcut: "/profile.png",
+    apple: "/profile.png",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    title: "Clark Sean Payabyab — Full-Stack Developer | MERN",
+    description:
+      "Full-stack developer leveraging AI-assisted workflows alongside React, Next.js, React Native, and Node.js to build modern web and mobile applications.",
+    siteName: "Clark Sean Payabyab",
+    images: [
+      {
+        url: "/profile.png",
+        width: 800,
+        height: 800,
+        alt: "Clark Sean Payabyab",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "Clark Sean Payabyab — Full-Stack Developer | MERN",
+    description:
+      "Full-stack developer leveraging AI-assisted workflows alongside React, Next.js, React Native, and Node.js to build modern web and mobile applications.",
+    images: ["/profile.png"],
+  },
+}
 
 export default function RootLayout({
   children,

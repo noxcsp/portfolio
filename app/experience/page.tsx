@@ -1,7 +1,14 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { EXPERIENCES } from "@/constants/experience"
 import { HiArrowLongLeft } from "react-icons/hi2"
 import { SkillPill } from "@/components/SkillPill"
+
+export const metadata: Metadata = {
+  title: "Experience & History",
+  description:
+    "Detailed timeline of professional roles, internships, and key project engagements for Clark Sean Payabyab.",
+}
 
 export default function ExperiencePage() {
   return (
