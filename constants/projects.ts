@@ -63,6 +63,7 @@ export const SAMPLE_PROJECTS: ProjectItem[] = [
       { name: "Gemini API" },
       { name: "GitHub Copilot" },
       { name: "Cloudinary" },
+      { name: "Render" },
     ],
   },
   {
@@ -79,6 +80,7 @@ export const SAMPLE_PROJECTS: ProjectItem[] = [
       { name: "Supabase" },
       { name: "Firebase Cloud Messaging" },
       { name: "Antigravity IDE" },
+      { name: "Vercel" },
     ],
   },
   {

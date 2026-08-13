@@ -1,4 +1,5 @@
 import Hero from "@/components/sections/hero"
+import Technologies from "@/components/sections/technologies"
 import Experience from "@/components/sections/experience"
 import Projects from "@/components/sections/projects"
 
@@ -8,6 +9,7 @@ export default function Page() {
       <Hero />
       <Experience />
       <Projects />
+      <Technologies />
     </main>
   )
 }
