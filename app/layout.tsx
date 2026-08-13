@@ -67,7 +67,7 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider>
-          <div className="relative flex min-h-screen w-full justify-center mb-16">
+          <div className="relative flex min-h-screen w-full justify-center">
             <LightRays
               raysOrigin="top-left"
               raysColor="var(--foreground)"
