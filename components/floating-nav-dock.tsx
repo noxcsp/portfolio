@@ -9,7 +9,7 @@ import {
   Phone,
   FileText,
 } from "lucide-react"
-import { FaGithub, FaLinkedin } from "react-icons/fa6"
+import { FaGithub, FaLinkedin, FaFacebook } from "react-icons/fa6"
 
 import { Dock, DockIcon } from "@/components/ui/dock"
 import { Separator } from "@/components/ui/separator"
@@ -30,7 +30,6 @@ export function FloatingNavDock() {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
       <Dock className="h-14 px-3 gap-1.5 border-border/60 bg-background/80 backdrop-blur-md">
-        {/* 1. Home */}
         <DockIcon tooltip="Home">
           <Link
             href="/"
@@ -42,10 +41,8 @@ export function FloatingNavDock() {
           </Link>
         </DockIcon>
 
-        {/* 2. Vertical Line Separator */}
-        <Separator orientation="vertical" className="h-6 w-px bg-border/60 mx-1" />
+        <Separator orientation="vertical" className="bg-foreground" />
 
-        {/* 3. LinkedIn */}
         <DockIcon tooltip="LinkedIn">
           <a
             href="https://linkedin.com/in/clarkpayabyab/"
@@ -58,7 +55,6 @@ export function FloatingNavDock() {
           </a>
         </DockIcon>
 
-        {/* 4. GitHub */}
         <DockIcon tooltip="GitHub">
           <a
             href="https://github.com/noxcsp"
@@ -71,7 +67,18 @@ export function FloatingNavDock() {
           </a>
         </DockIcon>
 
-        {/* 5. Email */}
+        <DockIcon tooltip="Facebook">
+          <a
+            href="https://www.facebook.com/share/1K2hkJR1V6/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+          >
+            <FaFacebook className="h-5 w-5" />
+          </a>
+        </DockIcon>
+
         <DockIcon tooltip="Email">
           <a
             href="mailto:seanpayabyab17@gmail.com"
@@ -82,7 +89,6 @@ export function FloatingNavDock() {
           </a>
         </DockIcon>
 
-        {/* 6. Phone */}
         <DockIcon tooltip="Phone">
           <a
             href="tel:+639762535224"
@@ -93,10 +99,8 @@ export function FloatingNavDock() {
           </a>
         </DockIcon>
 
-        {/* 7. Vertical Line Separator */}
-        <Separator orientation="vertical" className="h-6 w-px bg-border/60 mx-1" />
+        <Separator orientation="vertical" className="bg-foreground" />
 
-        {/* 8. Resume Viewer */}
         <DockIcon tooltip="Resume">
           <a
             href="/Clark_Sean_Payabyab-Resume.pdf"
