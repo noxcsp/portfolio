@@ -2,6 +2,13 @@ import type { ReactNode } from "react"
 
 export type ProjectStatus = "live" | "in progress" | "done"
 
+export enum ProjectCategory {
+  CAPSTONE = "Capstone Project",
+  PERSONAL = "Personal Project",
+  WORK = "Work Project",
+  FREELANCE = "Freelance Project",
+}
+
 export interface TechItem {
   /** Name of the technology (e.g. "React", "TypeScript") */
   name: string
@@ -14,6 +21,7 @@ export interface TechItem {
 export interface ProjectItem {
   id: string
   title: string
+  category?: ProjectCategory
   description: string
   image: string
   imageAlt?: string
@@ -21,16 +29,16 @@ export interface ProjectItem {
   techStack: TechItem[]
   liveUrl?: string
   githubUrl?: string
-  isPrivate?: boolean
 }
 
 export const SAMPLE_PROJECTS: ProjectItem[] = [
   {
     id: "dataone-cms",
     title: "DataOne Asia Philippines",
+    category: ProjectCategory.WORK,
     description:
       "A production-ready enterprise company website and custom CMS accelerating content workflow efficiency and boosting brand visibility.",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop",
+    image: "/project_thumbnails/dataone-asia-philippines.png",
     imageAlt: "DataOne Asia CMS Dashboard Preview",
     status: "live",
     liveUrl: "https://www.data1asia.com",
@@ -48,9 +56,10 @@ export const SAMPLE_PROJECTS: ProjectItem[] = [
   {
     id: "characTale",
     title: "CharacTale",
+    category: ProjectCategory.CAPSTONE,
     description:
       "An AI-powered interactive learning platform teaching Filipino moral values through dynamic storytelling and assessments for Grade 4 to 6 students.",
-    image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800&auto=format&fit=crop",
+    image: "/project_thumbnails/charactale.jpg",
     imageAlt: "CharacTale Mobile App Preview",
     status: "done",
     techStack: [
@@ -69,9 +78,10 @@ export const SAMPLE_PROJECTS: ProjectItem[] = [
   {
     id: "phase",
     title: "Phase",
+    category: ProjectCategory.PERSONAL,
     description:
       "A cross-platform subscription tracking PWA automating recurring expense analytics and scheduled push notification pipelines.",
-    image: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?q=80&w=800&auto=format&fit=crop",
+    image: "/project_thumbnails/phase.png",
     imageAlt: "Phase Subscription Tracker Preview",
     status: "in progress",
     techStack: [
@@ -86,12 +96,12 @@ export const SAMPLE_PROJECTS: ProjectItem[] = [
   {
     id: "outreach-analytics-automation",
     title: "Outreach & Analytics Automation",
+    category: ProjectCategory.FREELANCE,
     description:
       "A custom internal browser extension streamlining partner outreach automation and tracking visual correlation metrics between video campaigns and app installs.",
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop",
+    image: "/project_thumbnails/outreach-and-analytics-automation .png",
     imageAlt: "Outreach & Analytics Automation Tool Preview",
     status: "done",
-    isPrivate: true,
     techStack: [
       { name: "Cursor" },
       { name: "JavaScript" },

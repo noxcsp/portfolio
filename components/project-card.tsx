@@ -6,7 +6,7 @@ import { ProjectStatusBadge } from "@/components/project-status-badge"
 import { TechIconList } from "@/components/tech-icon-list"
 import { Separator } from "@/components/ui/separator"
 import type { ProjectItem } from "@/constants/projects"
-import { ArrowUpRight, Lock } from "lucide-react"
+import { ArrowUpRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface ProjectCardProps {
@@ -16,7 +16,7 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, className, spotlightColor }: ProjectCardProps) {
-  const { title, description, image, imageAlt, status, techStack, liveUrl, isPrivate } = project
+  const { title, category, description, image, imageAlt, status, techStack, liveUrl } = project
 
   return (
     <SpotlightCard
@@ -25,7 +25,7 @@ export function ProjectCard({ project, className, spotlightColor }: ProjectCardP
     >
       <div className="flex flex-col gap-2.5">
         {/* 1. Project Image */}
-        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted border border-border/50">
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted border border-border/50">
           <Image
             src={image}
             alt={imageAlt || title}
@@ -36,9 +36,14 @@ export function ProjectCard({ project, className, spotlightColor }: ProjectCardP
           />
         </div>
 
-        {/* 2. Status Badge */}
-        <div className="flex items-center justify-between">
+        {/* 2. Status & Category Badges */}
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <ProjectStatusBadge status={status} />
+          {category && (
+            <span className="inline-flex items-center rounded-[0.625rem] border border-dashed border-border/80 bg-muted/40 px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
+              {category}
+            </span>
+          )}
         </div>
 
         {/* 3. Project Title */}
@@ -73,13 +78,8 @@ export function ProjectCard({ project, className, spotlightColor }: ProjectCardP
               <span>View Live Website</span>
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 ease-out group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
             </Link>
-          ) : isPrivate ? (
-            <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-              <Lock className="h-3.5 w-3.5" />
-              <span>Private Repository</span>
-            </span>
           ) : (
-            <span className="text-xs text-muted-foreground font-mono">Internal Project</span>
+            <span className="text-xs text-muted-foreground font-mono">{category}</span>
           )}
         </div>
       </div>
