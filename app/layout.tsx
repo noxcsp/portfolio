@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Manrope } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import LightRays from "@/components/reactbits/LightRays"
+import { FloatingNavDock } from "@/components/floating-nav-dock"
 import { cn } from "@/lib/utils"
 
 const manropeHeading = Manrope({ subsets: ["latin"], variable: "--font-heading" })
@@ -96,6 +97,7 @@ export default function RootLayout({
               saturation={1}
             />
             {children}
+            <FloatingNavDock />
           </div>
         </ThemeProvider>
       </body>

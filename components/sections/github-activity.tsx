@@ -58,6 +58,7 @@ export default function GithubActivity() {
                 colorScheme="dark"
                 showColorLegend={false}
                 theme={calendarTheme}
+                year={2026}
                 blockSize={9.5}
                 blockMargin={3}
                 blockRadius={3}

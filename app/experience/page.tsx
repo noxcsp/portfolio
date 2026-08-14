@@ -32,7 +32,7 @@ export default function ExperiencePage() {
       </div>
 
       {/* Timeline Track */}
-      <div className="relative ml-3 flex flex-col gap-10 border-l border-border/80 py-2 sm:ml-6">
+      <div className="relative ml-3 flex flex-col gap-10 border-l border-foreground py-2 sm:ml-6">
         {EXPERIENCES.map((item) => (
           <div
             key={item.id}

@@ -54,7 +54,7 @@ export default function Profile() {
               <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
               <a
                 href="mailto:seanpayabyab17@gmail.com"
-                className="font-medium transition-colors hover:text-foreground hover:underline"
+                className="font-medium transition-colors hover:text-foreground"
               >
                 seanpayabyab17@gmail.com
               </a>
