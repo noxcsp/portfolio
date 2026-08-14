@@ -1,6 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
+import { useTheme } from "next-themes"
 import { ExternalLink } from "lucide-react"
 import { FaGithub } from "react-icons/fa6"
 import { useHasMounted } from "@/hooks/useHasMounted"
@@ -22,6 +23,7 @@ const DynamicGitHubCalendar = dynamic(
 
 export default function GithubActivity() {
   const mounted = useHasMounted()
+  const { resolvedTheme } = useTheme()
 
   // Portfolio dark theme color palette for activity levels matching GitHub green theme
   const calendarTheme = {
@@ -70,7 +72,7 @@ export default function GithubActivity() {
             <div className="w-full flex flex-col items-center justify-center [&_svg]:w-full [&_svg]:h-auto [&_svg]:max-w-full">
               <DynamicGitHubCalendar
                 username="noxcsp"
-                colorScheme="dark"
+                colorScheme={resolvedTheme === "dark" ? "dark" : "light"}
                 showColorLegend={false}
                 theme={calendarTheme}
                 year={2026}

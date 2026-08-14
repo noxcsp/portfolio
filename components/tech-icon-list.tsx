@@ -20,6 +20,8 @@ import {
   SiCloudinary,
   SiSupabase,
   SiClaude,
+  SiRender,
+  SiVercel,
 } from "react-icons/si"
 import { Code2 } from "lucide-react"
 import { IoExtensionPuzzleOutline } from "react-icons/io5"
@@ -35,11 +37,15 @@ export function getTechIcon(name: string): React.ReactNode {
   const normalized = name.toLowerCase().trim()
   switch (normalized) {
     case "claude":
-      return <SiClaude className="text-[#C15F3C]"/>
+      return <SiClaude className="text-[#C15F3C] h-4 w-4"/>
     case "render":
-      return <Image src={Icons.render} alt="Render" className="h-3 w-3" />
+      return <SiRender className="text-foreground h-4 w-4" />
     case "vercel":
-      return <Image src={Icons.vercel} alt="Vercel" className="h-4 w-4 bg-black rounded-full p-1" />
+      return (
+        <div className="bg-black text-white rounded-full h-4 w-4 flex items-center justify-center">
+          <SiVercel className="h-2 w-2" />
+        </div>
+      )
     case "posthog":
       return <Image src={Icons.posthog} alt="PostHog" className="h-4 w-4" />
     case "cursor":

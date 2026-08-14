@@ -3,11 +3,14 @@
 import React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
 import {
   Home,
   Mail,
   Phone,
   FileText,
+  Sun,
+  Moon,
 } from "lucide-react"
 import { FaGithub, FaLinkedin, FaFacebook } from "react-icons/fa6"
 
@@ -18,8 +21,14 @@ import { useMediaQuery } from "@/hooks/useMediaQuery"
 export function FloatingNavDock() {
   const pathname = usePathname()
   const router = useRouter()
+  const { setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
   const isDesktop = useMediaQuery("(min-width: 1024px)", true)
   const isMobile = useMediaQuery("(max-width: 639px)", false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
     e.preventDefault()
@@ -28,6 +37,10 @@ export function FloatingNavDock() {
     } else {
       router.push("/")
     }
+  }
+
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark")
   }
 
   return (
@@ -108,7 +121,6 @@ export function FloatingNavDock() {
           </a>
         </DockIcon>
 
-        <Separator orientation="vertical" className="shrink-0 h-1/2 sm:h-2/3 m-auto w-px bg-foreground" />
 
         <DockIcon tooltip="Resume">
           <a
@@ -120,6 +132,22 @@ export function FloatingNavDock() {
           >
             <FileText className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
+        </DockIcon>
+
+        <Separator orientation="vertical" className="shrink-0 h-1/2 sm:h-2/3 m-auto w-px bg-foreground" />
+        
+        <DockIcon tooltip="Toggle Theme">
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle Theme"
+            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
+          >
+            {mounted && resolvedTheme === "dark" ? (
+              <Sun className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+            ) : (
+              <Moon className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+            )}
+          </button>
         </DockIcon>
       </Dock>
     </div>

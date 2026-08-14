@@ -3,7 +3,6 @@ import { Geist, Geist_Mono, Manrope } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import LightRays from "@/components/reactbits/LightRays"
 import { FloatingNavDock } from "@/components/floating-nav-dock"
 import { cn } from "@/lib/utils"
 
@@ -84,24 +83,8 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider>
-          <div className="relative flex min-h-screen w-full justify-center">
-            <LightRays
-              raysOrigin="top-center"
-              raysColor="var(--foreground)"
-              raysSpeed={1}
-              lightSpread={1}
-              rayLength={3}
-              followMouse={true}
-              mouseInfluence={0.1}
-              noiseAmount={0}
-              distortion={0}
-              pulsating={false}
-              fadeDistance={0}
-              saturation={1}
-            />
-            {children}
-            <FloatingNavDock />
-          </div>
+          {children}
+          <FloatingNavDock />
         </ThemeProvider>
       </body>
     </html>
