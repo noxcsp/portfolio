@@ -7,7 +7,10 @@ import LightRays from "@/components/reactbits/LightRays"
 import { FloatingNavDock } from "@/components/floating-nav-dock"
 import { cn } from "@/lib/utils"
 
-const manropeHeading = Manrope({ subsets: ["latin"], variable: "--font-heading" })
+const manropeHeading = Manrope({
+  subsets: ["latin"],
+  variable: "--font-heading",
+})
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -15,7 +18,9 @@ const fontMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://clarkpayabyab.com"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://clarkpayabyab.com"
+  ),
   title: {
     default: "Clark Sean Payabyab — Full-Stack Developer | MERN",
     template: "%s | Clark Sean Payabyab",
@@ -63,37 +68,29 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", geist.variable, manropeHeading.variable)}
+      className={cn(
+        "antialiased",
+        fontMono.variable,
+        "font-sans",
+        geist.variable,
+        manropeHeading.variable
+      )}
     >
       <body>
         <ThemeProvider>
           <div className="relative flex min-h-screen w-full justify-center">
             <LightRays
-              raysOrigin="top-left"
+              raysOrigin="top-center"
               raysColor="var(--foreground)"
               raysSpeed={1}
               lightSpread={1}
-              rayLength={2}
+              rayLength={3}
               followMouse={true}
               mouseInfluence={0.1}
               noiseAmount={0}
               distortion={0}
               pulsating={false}
-              fadeDistance={0.5}
-              saturation={1}
-            />
-            <LightRays
-              raysOrigin="top-right"
-              raysColor="var(--foreground)"
-              raysSpeed={1}
-              lightSpread={1}
-              rayLength={2}
-              followMouse={true}
-              mouseInfluence={0.1}
-              noiseAmount={0}
-              distortion={0}
-              pulsating={false}
-              fadeDistance={0.5}
+              fadeDistance={0}
               saturation={1}
             />
             {children}

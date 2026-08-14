@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState } from "react"
 import { Renderer, Program, Triangle, Mesh } from "ogl"
-import cn from "clsx"
+import { cn } from "@/lib/utils"
 
 export type RaysOrigin =
   | "top-center"
@@ -49,23 +49,26 @@ const getAnchorAndDir = (
   h: number
 ): { anchor: [number, number]; dir: [number, number] } => {
   const outside = 0.2
+  // Prevent outside distance from shooting thousands of pixels away on tall containers
+  const outsideY = outside * Math.min(h, Math.max(w, 400))
+  const outsideX = outside * Math.min(w, Math.max(h, 400))
   switch (origin) {
     case "top-left":
-      return { anchor: [0, -outside * h], dir: [0, 1] }
+      return { anchor: [0, -outsideY], dir: [0, 1] }
     case "top-right":
-      return { anchor: [w, -outside * h], dir: [0, 1] }
+      return { anchor: [w, -outsideY], dir: [0, 1] }
     case "left":
-      return { anchor: [-outside * w, 0.5 * h], dir: [1, 0] }
+      return { anchor: [-outsideX, 0.5 * h], dir: [1, 0] }
     case "right":
-      return { anchor: [(1 + outside) * w, 0.5 * h], dir: [-1, 0] }
+      return { anchor: [w + outsideX, 0.5 * h], dir: [-1, 0] }
     case "bottom-left":
-      return { anchor: [0, (1 + outside) * h], dir: [0, -1] }
+      return { anchor: [0, h + outsideY], dir: [0, -1] }
     case "bottom-center":
-      return { anchor: [0.5 * w, (1 + outside) * h], dir: [0, -1] }
+      return { anchor: [0.5 * w, h + outsideY], dir: [0, -1] }
     case "bottom-right":
-      return { anchor: [w, (1 + outside) * h], dir: [0, -1] }
+      return { anchor: [w, h + outsideY], dir: [0, -1] }
     default: // "top-center"
-      return { anchor: [0.5 * w, -outside * h], dir: [0, 1] }
+      return { anchor: [0.5 * w, -outsideY], dir: [0, 1] }
   }
 }
 
@@ -113,7 +116,7 @@ const LightRays: React.FC<LightRaysProps> = ({
   const animationIdRef = useRef<number | null>(null)
   const meshRef = useRef<Mesh | null>(null)
   const cleanupFunctionRef = useRef<(() => void) | null>(null)
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
   const observerRef = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
@@ -124,7 +127,7 @@ const LightRays: React.FC<LightRaysProps> = ({
         const entry = entries[0]
         setIsVisible(entry.isIntersecting)
       },
-      { threshold: 0.1 }
+      { threshold: 0 }
     )
 
     observerRef.current.observe(containerRef.current)
@@ -211,10 +214,11 @@ float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord,
   float spreadFactor = pow(max(distortedAngle, 0.0), 1.0 / max(lightSpread, 0.001));
 
   float distance = length(sourceToCoord);
-  float maxDistance = iResolution.x * rayLength;
+  float maxReach = max(iResolution.x, iResolution.y * 0.4);
+  float maxDistance = maxReach * rayLength;
   float lengthFalloff = clamp((maxDistance - distance) / maxDistance, 0.0, 1.0);
   
-  float fadeFalloff = clamp((iResolution.x * fadeDistance - distance) / (iResolution.x * fadeDistance), 0.5, 1.0);
+  float fadeFalloff = clamp((maxReach * fadeDistance - distance) / (maxReach * fadeDistance), 0.5, 1.0);
   float pulse = pulsating > 0.5 ? (0.8 + 0.2 * sin(iTime * speed * 3.0)) : 1.0;
 
   float baseStrength = clamp(
@@ -305,6 +309,8 @@ void main() {
         renderer.dpr = Math.min(window.devicePixelRatio, 2)
 
         const { clientWidth: wCSS, clientHeight: hCSS } = containerRef.current
+        if (wCSS === 0 || hCSS === 0) return
+
         renderer.setSize(wCSS, hCSS)
 
         const dpr = renderer.dpr
@@ -350,6 +356,11 @@ void main() {
         }
       }
 
+      const resizeObserver = new ResizeObserver(() => {
+        updatePlacement()
+      })
+      resizeObserver.observe(containerRef.current)
+
       window.addEventListener("resize", updatePlacement)
       updatePlacement()
       animationIdRef.current = requestAnimationFrame(loop)
@@ -360,6 +371,7 @@ void main() {
           animationIdRef.current = null
         }
 
+        resizeObserver.disconnect()
         window.removeEventListener("resize", updatePlacement)
 
         if (renderer) {
@@ -428,6 +440,8 @@ void main() {
     u.distortion.value = distortion
 
     const { clientWidth: wCSS, clientHeight: hCSS } = containerRef.current
+    if (wCSS === 0 || hCSS === 0) return
+
     const dpr = renderer.dpr
     const { anchor, dir } = getAnchorAndDir(raysOrigin, wCSS * dpr, hCSS * dpr)
     u.rayPos.value = anchor
@@ -450,14 +464,29 @@ void main() {
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current || !rendererRef.current) return
       const rect = containerRef.current.getBoundingClientRect()
+      if (rect.width === 0 || rect.height === 0) return
       const x = (e.clientX - rect.left) / rect.width
       const y = (e.clientY - rect.top) / rect.height
       mouseRef.current = { x, y }
     }
 
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!containerRef.current || !rendererRef.current || e.touches.length === 0) return
+      const touch = e.touches[0]
+      const rect = containerRef.current.getBoundingClientRect()
+      if (rect.width === 0 || rect.height === 0) return
+      const x = (touch.clientX - rect.left) / rect.width
+      const y = (touch.clientY - rect.top) / rect.height
+      mouseRef.current = { x, y }
+    }
+
     if (followMouse) {
       window.addEventListener("mousemove", handleMouseMove)
-      return () => window.removeEventListener("mousemove", handleMouseMove)
+      window.addEventListener("touchmove", handleTouchMove, { passive: true })
+      return () => {
+        window.removeEventListener("mousemove", handleMouseMove)
+        window.removeEventListener("touchmove", handleTouchMove)
+      }
     }
   }, [followMouse])
 
@@ -465,7 +494,7 @@ void main() {
     <div
       ref={containerRef}
       className={cn(
-        "pointer-events-none absolute z-3 h-full w-full overflow-hidden",
+        "pointer-events-none absolute inset-0 z-0 h-full w-full overflow-hidden",
         className
       )}
     />
