@@ -70,8 +70,16 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
     return (
       <motion.div
         ref={ref}
-        onMouseMove={(e) => mouseX.set(e.pageX)}
-        onMouseLeave={() => mouseX.set(Infinity)}
+        onMouseMove={(e) => {
+          if (!disableMagnification) {
+            mouseX.set(e.pageX)
+          }
+        }}
+        onMouseLeave={() => {
+          if (!disableMagnification) {
+            mouseX.set(Infinity)
+          }
+        }}
         {...props}
         className={cn(dockVariants({ className }), {
           "items-start": direction === "top",
@@ -118,6 +126,7 @@ const DockIcon = ({
   const defaultMouseX = useMotionValue(Infinity)
 
   const distanceCalc = useTransform(mouseX ?? defaultMouseX, (val: number) => {
+    if (disableMagnification) return 0
     const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 }
     return val - bounds.x - bounds.width / 2
   })
@@ -141,14 +150,13 @@ const DockIcon = ({
       ref={ref}
       style={{ width: scaleSize, height: scaleSize, padding }}
       className={cn(
-        "group relative flex aspect-square cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-foreground/10",
-        disableMagnification && "hover:bg-muted-foreground transition-colors",
+        "group relative flex aspect-square cursor-pointer items-center justify-center rounded-full transition-colors lg:hover:bg-foreground/10 [@media(hover:none)]:hover:bg-transparent",
         className
       )}
       {...props}
     >
       {tooltip && (
-        <span className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 rounded-md border border-border/80 bg-background/90 px-2.5 py-1 text-xs font-medium text-foreground shadow-md backdrop-blur-md opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap z-50">
+        <span className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 hidden rounded-md border border-border/80 bg-background/90 px-2.5 py-1 text-xs font-medium text-foreground shadow-md backdrop-blur-md opacity-0 transition-opacity lg:block lg:group-hover:opacity-100 [@media(hover:none)]:hidden whitespace-nowrap z-50">
           {tooltip}
         </span>
       )}

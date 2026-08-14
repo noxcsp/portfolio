@@ -13,10 +13,13 @@ import { FaGithub, FaLinkedin, FaFacebook } from "react-icons/fa6"
 
 import { Dock, DockIcon } from "@/components/ui/dock"
 import { Separator } from "@/components/ui/separator"
+import { useMediaQuery } from "@/hooks/useMediaQuery"
 
 export function FloatingNavDock() {
   const pathname = usePathname()
   const router = useRouter()
+  const isDesktop = useMediaQuery("(min-width: 1024px)", true)
+  const isMobile = useMediaQuery("(max-width: 639px)", false)
 
   const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
     e.preventDefault()
@@ -28,20 +31,25 @@ export function FloatingNavDock() {
   }
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
-      <Dock className="h-14 px-3 gap-1.5 border-none bg-background/50 backdrop-blur-md">
+    <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
+      <Dock
+        iconSize={isMobile ? 32 : 40}
+        iconMagnification={isDesktop ? 60 : (isMobile ? 32 : 40)}
+        disableMagnification={!isDesktop}
+        className="h-11 sm:h-14 px-2 sm:px-3 gap-1 sm:gap-1.5 max-w-[calc(100vw-1.5rem)] border-none bg-background/50 backdrop-blur-md"
+      >
         <DockIcon tooltip="Home">
           <Link
             href="/"
             onClick={handleHomeClick}
             aria-label="Home"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
-            <Home className="h-5 w-5" />
+            <Home className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </Link>
         </DockIcon>
 
-        <Separator orientation="vertical" className="shrink-0 h-2/3 m-auto w-px bg-foreground" />
+        <Separator orientation="vertical" className="shrink-0 h-1/2 sm:h-2/3 m-auto w-px bg-foreground" />
 
         <DockIcon tooltip="LinkedIn">
           <a
@@ -49,9 +57,9 @@ export function FloatingNavDock() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
-            <FaLinkedin className="h-5 w-5" />
+            <FaLinkedin className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
         </DockIcon>
 
@@ -61,9 +69,9 @@ export function FloatingNavDock() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
-            <FaGithub className="h-5 w-5" />
+            <FaGithub className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
         </DockIcon>
 
@@ -73,9 +81,9 @@ export function FloatingNavDock() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
-            <FaFacebook className="h-5 w-5" />
+            <FaFacebook className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
         </DockIcon>
 
@@ -83,9 +91,9 @@ export function FloatingNavDock() {
           <a
             href="mailto:seanpayabyab17@gmail.com"
             aria-label="Email"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
-            <Mail className="h-5 w-5" />
+            <Mail className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
         </DockIcon>
 
@@ -93,13 +101,13 @@ export function FloatingNavDock() {
           <a
             href="tel:+639762535224"
             aria-label="Phone"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
-            <Phone className="h-5 w-5" />
+            <Phone className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
         </DockIcon>
 
-        <Separator orientation="vertical" className="shrink-0 h-2/3 m-auto w-px bg-foreground" />
+        <Separator orientation="vertical" className="shrink-0 h-1/2 sm:h-2/3 m-auto w-px bg-foreground" />
 
         <DockIcon tooltip="Resume">
           <a
@@ -107,9 +115,9 @@ export function FloatingNavDock() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Resume Viewer"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
-            <FileText className="h-5 w-5" />
+            <FileText className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
         </DockIcon>
       </Dock>
