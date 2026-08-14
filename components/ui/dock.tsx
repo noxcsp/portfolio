@@ -29,7 +29,7 @@ const DEFAULT_DISTANCE = 140
 const DEFAULT_DISABLEMAGNIFICATION = false
 
 const dockVariants = cva(
-  "supports-backdrop-blur:bg-background/80 mx-auto flex h-[58px] w-max items-center justify-center gap-2 rounded-full border border-border/60 bg-background/70 p-2 backdrop-blur-md shadow-lg shadow-black/20"
+  "supports-backdrop-blur:bg-background/80 mx-auto flex h-[50px] sm:h-[58px] w-max items-center justify-center gap-1 sm:gap-2 rounded-full border border-border/60 bg-background/70 px-2 sm:px-3 backdrop-blur-md shadow-lg shadow-black/20"
 )
 
 const Dock = React.forwardRef<HTMLDivElement, DockProps>(
@@ -70,8 +70,16 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
     return (
       <motion.div
         ref={ref}
-        onMouseMove={(e) => mouseX.set(e.pageX)}
-        onMouseLeave={() => mouseX.set(Infinity)}
+        onMouseMove={(e) => {
+          if (!disableMagnification) {
+            mouseX.set(e.pageX)
+          }
+        }}
+        onMouseLeave={() => {
+          if (!disableMagnification) {
+            mouseX.set(Infinity)
+          }
+        }}
         {...props}
         className={cn(dockVariants({ className }), {
           "items-start": direction === "top",
@@ -114,10 +122,10 @@ const DockIcon = ({
   ...props
 }: DockIconProps) => {
   const ref = useRef<HTMLDivElement>(null)
-  const padding = Math.max(6, size * 0.2)
   const defaultMouseX = useMotionValue(Infinity)
 
   const distanceCalc = useTransform(mouseX ?? defaultMouseX, (val: number) => {
+    if (disableMagnification) return 0
     const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 }
     return val - bounds.x - bounds.width / 2
   })
@@ -139,20 +147,19 @@ const DockIcon = ({
   return (
     <motion.div
       ref={ref}
-      style={{ width: scaleSize, height: scaleSize, padding }}
+      style={{ width: scaleSize, height: scaleSize }}
       className={cn(
-        "group relative flex aspect-square cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-foreground/10",
-        disableMagnification && "hover:bg-muted-foreground transition-colors",
+        "group relative flex aspect-square cursor-pointer items-center justify-center rounded-full transition-colors lg:hover:bg-foreground/10 [@media(hover:none)]:hover:bg-transparent [@media(hover:none)]:active:bg-foreground/15 touch-manipulation",
         className
       )}
       {...props}
     >
       {tooltip && (
-        <span className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 rounded-md border border-border/80 bg-background/90 px-2.5 py-1 text-xs font-medium text-foreground shadow-md backdrop-blur-md opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap z-50">
+        <span className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 hidden rounded-md border border-border/80 bg-background/90 px-2.5 py-1 text-xs font-medium text-foreground shadow-md backdrop-blur-md opacity-0 transition-opacity lg:block lg:group-hover:opacity-100 [@media(hover:none)]:hidden whitespace-nowrap z-50">
           {tooltip}
         </span>
       )}
-      <div className="flex items-center justify-center">{children}</div>
+      <div className="flex size-full items-center justify-center">{children}</div>
     </motion.div>
   )
 }

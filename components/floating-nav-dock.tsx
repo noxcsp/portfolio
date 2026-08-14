@@ -1,22 +1,33 @@
 "use client"
 
 import React from "react"
+import { flushSync } from "react-dom"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
 import {
   Home,
   Mail,
   Phone,
   FileText,
+  Sun,
+  Moon,
 } from "lucide-react"
 import { FaGithub, FaLinkedin, FaFacebook } from "react-icons/fa6"
 
 import { Dock, DockIcon } from "@/components/ui/dock"
 import { Separator } from "@/components/ui/separator"
+import { useMediaQuery } from "@/hooks/useMediaQuery"
+import { useHasMounted } from "@/hooks/useHasMounted"
 
 export function FloatingNavDock() {
   const pathname = usePathname()
   const router = useRouter()
+  const { setTheme, resolvedTheme } = useTheme()
+  const mounted = useHasMounted()
+  const isDesktop = useMediaQuery("(min-width: 1024px)", true)
+  const isMobile = useMediaQuery("(max-width: 639px)", false)
+  const isCompactMobile = useMediaQuery("(max-width: 380px)", false)
 
   const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
     e.preventDefault()
@@ -27,21 +38,76 @@ export function FloatingNavDock() {
     }
   }
 
+  const toggleTheme = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    const newTheme = resolvedTheme === "dark" ? "light" : "dark"
+
+    if (
+      typeof document === "undefined" ||
+      !("startViewTransition" in document) ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setTheme(newTheme)
+      return
+    }
+
+    let x = window.innerWidth / 2
+    let y = window.innerHeight / 2
+
+    if (e?.currentTarget) {
+      const rect = e.currentTarget.getBoundingClientRect()
+      x = rect.left + rect.width / 2
+      y = rect.top + rect.height / 2
+    }
+
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    )
+
+    const transition = document.startViewTransition(() => {
+      flushSync(() => {
+        setTheme(newTheme)
+      })
+    })
+
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 750,
+          easing: "ease-in-out",
+          pseudoElement: "::view-transition-new(root)",
+        } as KeyframeAnimationOptions
+      )
+    })
+  }
+
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
-      <Dock className="h-14 px-3 gap-1.5 border-none bg-background/50 backdrop-blur-md">
+    <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
+      <Dock
+        iconSize={isCompactMobile ? 34 : (isMobile ? 36 : 40)}
+        iconMagnification={isDesktop ? 60 : (isCompactMobile ? 34 : (isMobile ? 36 : 40))}
+        disableMagnification={!isDesktop}
+        className="h-12 sm:h-14 px-2 sm:px-3 gap-1 sm:gap-1.5 max-w-[calc(100vw-1rem)] border-none bg-background/50 backdrop-blur-md"
+      >
         <DockIcon tooltip="Home">
           <Link
             href="/"
+            prefetch={true}
             onClick={handleHomeClick}
             aria-label="Home"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex size-full min-h-10 min-w-10 sm:min-h-11 sm:min-w-11 items-center justify-center rounded-full text-foreground transition-all active:scale-90 active:bg-foreground/10 touch-manipulation lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground"
           >
-            <Home className="h-5 w-5" />
+            <Home className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </Link>
         </DockIcon>
 
-        <Separator orientation="vertical" className="shrink-0 h-2/3 m-auto w-px bg-foreground" />
+        <Separator orientation="vertical" className="shrink-0 h-1/2 sm:h-2/3 m-auto w-px bg-foreground" />
 
         <DockIcon tooltip="LinkedIn">
           <a
@@ -49,9 +115,9 @@ export function FloatingNavDock() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex size-full min-h-10 min-w-10 sm:min-h-11 sm:min-w-11 items-center justify-center rounded-full text-foreground transition-all active:scale-90 active:bg-foreground/10 touch-manipulation lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground"
           >
-            <FaLinkedin className="h-5 w-5" />
+            <FaLinkedin className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
         </DockIcon>
 
@@ -61,21 +127,21 @@ export function FloatingNavDock() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex size-full min-h-10 min-w-10 sm:min-h-11 sm:min-w-11 items-center justify-center rounded-full text-foreground transition-all active:scale-90 active:bg-foreground/10 touch-manipulation lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground"
           >
-            <FaGithub className="h-5 w-5" />
+            <FaGithub className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
         </DockIcon>
 
-        <DockIcon tooltip="Facebook">
+        <DockIcon tooltip="Facebook" className="hidden sm:flex">
           <a
             href="https://www.facebook.com/clark.nox/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex size-full min-h-10 min-w-10 sm:min-h-11 sm:min-w-11 items-center justify-center rounded-full text-foreground transition-all active:scale-90 active:bg-foreground/10 touch-manipulation lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground"
           >
-            <FaFacebook className="h-5 w-5" />
+            <FaFacebook className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
         </DockIcon>
 
@@ -83,9 +149,9 @@ export function FloatingNavDock() {
           <a
             href="mailto:seanpayabyab17@gmail.com"
             aria-label="Email"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex size-full min-h-10 min-w-10 sm:min-h-11 sm:min-w-11 items-center justify-center rounded-full text-foreground transition-all active:scale-90 active:bg-foreground/10 touch-manipulation lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground"
           >
-            <Mail className="h-5 w-5" />
+            <Mail className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
         </DockIcon>
 
@@ -93,13 +159,11 @@ export function FloatingNavDock() {
           <a
             href="tel:+639762535224"
             aria-label="Phone"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex size-full min-h-10 min-w-10 sm:min-h-11 sm:min-w-11 items-center justify-center rounded-full text-foreground transition-all active:scale-90 active:bg-foreground/10 touch-manipulation lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground"
           >
-            <Phone className="h-5 w-5" />
+            <Phone className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
         </DockIcon>
-
-        <Separator orientation="vertical" className="shrink-0 h-2/3 m-auto w-px bg-foreground" />
 
         <DockIcon tooltip="Resume">
           <a
@@ -107,10 +171,27 @@ export function FloatingNavDock() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Resume Viewer"
-            className="flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
+            className="flex size-full min-h-10 min-w-10 sm:min-h-11 sm:min-w-11 items-center justify-center rounded-full text-foreground transition-all active:scale-90 active:bg-foreground/10 touch-manipulation lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground"
           >
-            <FileText className="h-5 w-5" />
+            <FileText className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
+        </DockIcon>
+
+        <Separator orientation="vertical" className="shrink-0 h-1/2 sm:h-2/3 m-auto w-px bg-foreground" />
+        
+        <DockIcon tooltip="Toggle Theme">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle Theme"
+            className="flex size-full min-h-10 min-w-10 sm:min-h-11 sm:min-w-11 items-center justify-center rounded-full text-foreground transition-all active:scale-90 active:bg-foreground/10 touch-manipulation lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground"
+          >
+            {mounted && resolvedTheme === "dark" ? (
+              <Sun className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+            ) : (
+              <Moon className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+            )}
+          </button>
         </DockIcon>
       </Dock>
     </div>

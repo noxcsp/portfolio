@@ -35,12 +35,13 @@ These rules govern all code generation, edits, and decisions made within this re
 ### 2.1 Core Principles
 
 - **Monoline Minimalism:** Use clean 1px borders and subtle dividing lines. No unnecessary drop shadows or heavy fill colors.
-- **Dark Theme Only:** The sole theme is a deep midnight navy background (`oklch(0.12 0.02 250)` / `#0a0f1b`). Do not design for or implement a light theme.
+- **Adaptive Dual Theme (Light & Dark with System Default):** Supports Light and Dark themes. Initial theme defaults to OS preference (`system`). Dark theme uses Mid Dark Neutral Gray (`oklch(0.19 0 0)` / `#1c1c1e`), Light theme uses a slight hint of gray (`oklch(0.97 0.003 260)` / `#f4f4f6`).
 - **Floating Navigation:** Navigation is a screen-anchored bottom floating dock (MagicUI style). No top navbars.
 
 ### 2.2 Color
 
-- **Background:** `oklch(0.12 0.02 250)` / `#0a0f1b` (Deep Navy)
+- **Dark Theme Background:** `oklch(0.19 0 0)` / `#1c1c1e` (Mid Dark Neutral Gray)
+- **Light Theme Background:** `oklch(0.97 0.003 260)` / `#f4f4f6` (Slight Hint of Gray)
 - Use semantic tokens (`bg-background`, `text-foreground`, `text-muted-foreground`, `border-border`)  never hardcode color values unless they are the exact design token values above.
 
 ### 2.3 Layout

@@ -1,49 +1,156 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, useId } from "react"
 import Image from "next/image"
 import type { CertificationItem } from "@/constants/certifications"
 import { ExternalLink, Maximize2, X, FileText, ChevronLeft, ChevronRight } from "lucide-react"
+import { motion, AnimatePresence, useReducedMotion } from "motion/react"
+import { cn } from "@/lib/utils"
 
 interface CertificationCardProps {
   certification: CertificationItem
 }
 
 export default function CertificationCard({ certification }: CertificationCardProps) {
-  const { name, issuer, issueDate, level, image, imageAlt, credentialUrl, pdfUrls } = certification
+  const { id, name, issuer, issueDate, level, image, imageAlt, credentialUrl, pdfUrls } = certification
   const [isOpen, setIsOpen] = useState(false)
   const [activePdfIndex, setActivePdfIndex] = useState(0)
+  const [isPdfLoading, setIsPdfLoading] = useState(true)
 
-  const hasPdfs = pdfUrls && pdfUrls.length > 0
+  const generatedId = useId()
+  const certId = id || generatedId
+  const triggerRef = useRef<HTMLElement | null>(null)
+  const modalRef = useRef<HTMLDivElement | null>(null)
+  const tabListRef = useRef<HTMLDivElement | null>(null)
+  const shouldReduceMotion = useReducedMotion()
 
+  const hasPdfs = Boolean(pdfUrls && pdfUrls.length > 0)
+
+  // Auto-scroll active tab into view when activePdfIndex changes
   useEffect(() => {
+    if (!isOpen || !hasPdfs) return
+    const activeTabButton = tabListRef.current?.querySelector<HTMLElement>(
+      `[id="cert-tab-${certId}-${activePdfIndex}"]`
+    )
+    if (activeTabButton) {
+      activeTabButton.scrollIntoView({
+        behavior: shouldReduceMotion ? "auto" : "smooth",
+        block: "nearest",
+        inline: "center",
+      })
+    }
+  }, [activePdfIndex, isOpen, hasPdfs, certId, shouldReduceMotion])
+
+  // Focus trap, scroll lock, and keyboard navigation
+  useEffect(() => {
+    if (!isOpen) {
+      if (triggerRef.current) {
+        triggerRef.current.focus()
+        triggerRef.current = null
+      }
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+
+    // Focus the modal or first interactive element upon opening
+    const focusTimeout = setTimeout(() => {
+      if (modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusable.length > 0) {
+          focusable[0].focus()
+        } else {
+          modalRef.current.focus()
+        }
+      }
+    }, 50)
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsOpen(false)
-      if (!isOpen || !hasPdfs) return
-      if (e.key === "ArrowRight") setActivePdfIndex((i) => Math.min(i + 1, pdfUrls!.length - 1))
-      if (e.key === "ArrowLeft") setActivePdfIndex((i) => Math.max(i - 1, 0))
+      // Escape closes modal
+      if (e.key === "Escape") {
+        e.preventDefault()
+        setIsOpen(false)
+        return
+      }
+
+      // Focus trap for Tab and Shift+Tab
+      if (e.key === "Tab") {
+        if (!modalRef.current) return
+        const focusable = Array.from(
+          modalRef.current.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter((el) => el.offsetParent !== null || el.offsetWidth > 0 || el.offsetHeight > 0)
+
+        if (focusable.length === 0) {
+          e.preventDefault()
+          return
+        }
+
+        const firstElement = focusable[0]
+        const lastElement = focusable[focusable.length - 1]
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement || !modalRef.current.contains(document.activeElement)) {
+            e.preventDefault()
+            lastElement.focus()
+          }
+        } else {
+          if (document.activeElement === lastElement || !modalRef.current.contains(document.activeElement)) {
+            e.preventDefault()
+            firstElement.focus()
+          }
+        }
+        return
+      }
+
+      // Arrow navigation for multi-PDF certifications
+      if (hasPdfs && pdfUrls && pdfUrls.length > 1) {
+        if (e.key === "ArrowRight") {
+          e.preventDefault()
+          setActivePdfIndex((prev) => {
+            const next = Math.min(prev + 1, pdfUrls.length - 1)
+            if (next !== prev) setIsPdfLoading(true)
+            return next
+          })
+        } else if (e.key === "ArrowLeft") {
+          e.preventDefault()
+          setActivePdfIndex((prev) => {
+            const next = Math.max(prev - 1, 0)
+            if (next !== prev) setIsPdfLoading(true)
+            return next
+          })
+        }
+      }
     }
-    if (isOpen) {
-      document.body.style.overflow = "hidden"
-      window.addEventListener("keydown", handleKeyDown)
-    } else {
-      document.body.style.overflow = "unset"
-    }
+
+    window.addEventListener("keydown", handleKeyDown)
+
     return () => {
-      document.body.style.overflow = "unset"
+      clearTimeout(focusTimeout)
+      document.body.style.overflow = previousOverflow || ""
       window.removeEventListener("keydown", handleKeyDown)
     }
   }, [isOpen, hasPdfs, pdfUrls])
 
-  const openModal = () => {
+  const openModal = (triggerEl?: HTMLElement | null) => {
+    triggerRef.current = triggerEl || (document.activeElement as HTMLElement | null)
     setActivePdfIndex(0)
+    setIsPdfLoading(true)
     setIsOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsOpen(false)
   }
 
   return (
     <>
       <div className="items-start gap-1 text-sm sm:grid sm:grid-cols-[160px_1fr] sm:gap-12">
-        {/* Left Column: Issue Date (Fixed column width matching ExperienceCard) */}
+        {/* Left Column: Issue Date */}
         <div className="pt-0.5 text-left text-xs font-medium text-muted-foreground sm:text-sm">
           {issueDate}
         </div>
@@ -74,15 +181,18 @@ export default function CertificationCard({ certification }: CertificationCardPr
               {image && (
                 <button
                   type="button"
-                  onClick={openModal}
-                  className="group relative h-12 w-16 shrink-0 overflow-hidden rounded-md border border-border/80 bg-muted/40 transition-all hover:border-primary/50 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-14 sm:w-20"
-                  aria-label={`View full image for ${name}`}
-                  title="Click to view full image"
+                  onClick={(e) => openModal(e.currentTarget)}
+                  className="group relative h-12 w-16 shrink-0 overflow-hidden rounded-md border border-border/80 bg-muted/40 transition-all hover:border-primary/50 hover:shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-14 sm:w-20"
+                  aria-label={`View full preview for ${name}`}
+                  title="Click to view full preview"
                 >
                   <Image
                     src={image}
                     alt={imageAlt || name}
                     fill
+                    loading="lazy"
+                    decoding="async"
+                    sizes="(max-width: 640px) 64px, 80px"
                     className="object-cover transition-transform duration-200 group-hover:scale-105"
                     unoptimized={image.startsWith("http")}
                   />
@@ -96,7 +206,7 @@ export default function CertificationCard({ certification }: CertificationCardPr
               {hasPdfs && (
                 <button
                   type="button"
-                  onClick={openModal}
+                  onClick={(e) => openModal(e.currentTarget)}
                   className="group/pdf inline-flex items-center gap-1.5 rounded-md border border-border/80 bg-muted/30 px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-primary/50 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   aria-label={`View certificates for ${name}`}
                   title="Click to view certificates"
@@ -115,7 +225,7 @@ export default function CertificationCard({ certification }: CertificationCardPr
                   href={credentialUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group/btn inline-flex items-center gap-1.5 rounded-md border border-border/80 bg-muted/30 px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-primary/50 hover:bg-muted hover:text-foreground"
+                  className="group/btn inline-flex items-center gap-1.5 rounded-md border border-border/80 bg-muted/30 px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-primary/50 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <span>Show credential</span>
                   <ExternalLink className="h-3 w-3 transition-transform group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5" />
@@ -127,131 +237,258 @@ export default function CertificationCard({ certification }: CertificationCardPr
       </div>
 
       {/* Lightbox Modal — Image */}
-      {isOpen && image && !hasPdfs && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200"
-          onClick={() => setIsOpen(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Full image of ${name}`}
-        >
-          <div
-            className="relative flex max-h-[90vh] max-w-4xl flex-col overflow-hidden rounded-xl border border-border bg-background p-2 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
+      <AnimatePresence>
+        {isOpen && image && !hasPdfs && (
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: shouldReduceMotion ? 0.1 : 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 pt-3 pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] px-3 sm:pt-4 sm:pb-24 sm:px-5 backdrop-blur-xs"
+            onClick={closeModal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={`cert-img-title-${certId}`}
+            aria-describedby={`cert-img-desc-${certId}`}
           >
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              className="absolute top-4 right-4 z-10 rounded-full bg-black/60 p-1.5 text-white transition-colors hover:bg-black/90 focus-visible:outline-none"
-              aria-label="Close full preview"
+            <motion.div
+              ref={modalRef}
+              tabIndex={-1}
+              initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+              animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+              transition={{ duration: shouldReduceMotion ? 0.1 : 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="relative flex w-[96vw] sm:w-[92vw] md:max-w-4xl lg:max-w-5xl h-full max-h-full flex-col overflow-hidden rounded-xl border border-border bg-background shadow-2xl focus:outline-none"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X className="h-5 w-5" />
-            </button>
-            <div className="relative h-[60vh] w-[80vw] max-w-3xl sm:h-[70vh]">
-              <Image
-                src={image}
-                alt={imageAlt || name}
-                fill
-                className="object-contain"
-                unoptimized={image.startsWith("http")}
-              />
-            </div>
-            <div className="p-3 text-center">
-              <p className="font-semibold text-foreground text-sm sm:text-base">{name}</p>
-              <p className="text-xs text-muted-foreground">{issuer}</p>
-            </div>
-          </div>
-        </div>
-      )}
+              {/* Header */}
+              <div className="flex shrink-0 items-center justify-between border-b border-border px-3.5 py-2.5 sm:px-5 sm:py-3.5">
+                <div className="min-w-0 pr-2">
+                  <p
+                    id={`cert-img-title-${certId}`}
+                    className="truncate font-semibold text-foreground text-sm sm:text-base leading-snug"
+                  >
+                    {name}
+                  </p>
+                  <p
+                    id={`cert-img-desc-${certId}`}
+                    className="truncate text-xs text-muted-foreground"
+                  >
+                    {issuer}
+                  </p>
+                </div>
+                <div className="flex shrink-0 items-center gap-1">
+                  <a
+                    href={image}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:p-2"
+                    aria-label={`Open full image for ${name} in new tab`}
+                    title="Open full image in new tab"
+                  >
+                    <ExternalLink className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:p-2"
+                    aria-label="Close full preview"
+                    title="Close preview (Esc)"
+                  >
+                    <X className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Image Content */}
+              <div className="relative flex-1 min-h-0 h-full w-full p-2 sm:p-4">
+                <Image
+                  src={image}
+                  alt={imageAlt || name}
+                  fill
+                  className="object-contain"
+                  unoptimized={image.startsWith("http")}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Lightbox Modal — PDF viewer with tab navigation */}
-      {isOpen && hasPdfs && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200"
-          onClick={() => setIsOpen(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Certificate viewer for ${name}`}
-        >
-          <div
-            className="relative flex w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-border bg-background shadow-2xl"
-            style={{ height: "90vh" }}
-            onClick={(e) => e.stopPropagation()}
+      <AnimatePresence>
+        {isOpen && hasPdfs && (
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: shouldReduceMotion ? 0.1 : 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 pt-3 pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] px-3 sm:pt-4 sm:pb-24 sm:px-5 backdrop-blur-xs"
+            onClick={closeModal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={`cert-title-${certId}`}
+            aria-describedby={`cert-desc-${certId}`}
           >
-            {/* Header */}
-            <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-3">
-              <div>
-                <p className="font-semibold text-foreground text-sm">{name}</p>
-                <p className="text-xs text-muted-foreground">{issuer}</p>
+            <motion.div
+              ref={modalRef}
+              tabIndex={-1}
+              initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+              animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+              transition={{ duration: shouldReduceMotion ? 0.1 : 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="relative flex w-[96vw] sm:w-[92vw] md:max-w-4xl lg:max-w-5xl h-full max-h-full flex-col overflow-hidden rounded-xl border border-border bg-background shadow-2xl focus:outline-none"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex shrink-0 items-center justify-between border-b border-border px-3.5 py-2.5 sm:px-5 sm:py-3.5">
+                <div className="min-w-0 pr-2">
+                  <p
+                    id={`cert-title-${certId}`}
+                    className="truncate font-semibold text-foreground text-sm sm:text-base leading-snug"
+                  >
+                    {name}
+                  </p>
+                  <p
+                    id={`cert-desc-${certId}`}
+                    className="truncate text-xs text-muted-foreground"
+                  >
+                    {issuer}
+                  </p>
+                </div>
+                <div className="flex shrink-0 items-center gap-1">
+                  <a
+                    href={pdfUrls![activePdfIndex].url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:p-2"
+                    aria-label={`Open ${pdfUrls![activePdfIndex].label} PDF in new tab`}
+                    title="Open / Download PDF in new tab"
+                  >
+                    <ExternalLink className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:p-2"
+                    aria-label="Close certificate viewer"
+                    title="Close preview (Esc)"
+                  >
+                    <X className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+                  </button>
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                aria-label="Close certificate viewer"
+
+              {/* Tab Bar */}
+              <div className="flex shrink-0 items-center justify-between border-b border-border bg-muted/20 px-3 py-1.5 sm:px-4 sm:py-2 gap-2">
+                <div
+                  ref={tabListRef}
+                  role="tablist"
+                  aria-label={`${name} certificate editions`}
+                  className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto scroll-smooth py-0.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden touch-pan-x"
+                >
+                  {pdfUrls!.map((pdf, i) => {
+                    const isSelected = i === activePdfIndex
+                    return (
+                      <button
+                        key={pdf.url}
+                        type="button"
+                        role="tab"
+                        id={`cert-tab-${certId}-${i}`}
+                        aria-selected={isSelected}
+                        aria-controls={`cert-panel-${certId}-${i}`}
+                        tabIndex={isSelected ? 0 : -1}
+                        onClick={() => {
+                          if (activePdfIndex !== i) {
+                            setActivePdfIndex(i)
+                            setIsPdfLoading(true)
+                          }
+                        }}
+                        className={cn(
+                          "shrink-0 rounded-md px-2.5 py-1 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                          isSelected
+                            ? "bg-primary text-primary-foreground shadow-xs font-semibold"
+                            : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                        )}
+                        aria-label={`View ${pdf.label}`}
+                      >
+                        {pdf.label}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {/* Arrow navigation */}
+                {pdfUrls!.length > 1 && (
+                  <div className="flex shrink-0 items-center gap-0.5 border-l border-border/60 pl-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (activePdfIndex > 0) {
+                          setActivePdfIndex((i) => i - 1)
+                          setIsPdfLoading(true)
+                        }
+                      }}
+                      disabled={activePdfIndex === 0}
+                      className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      aria-label="Previous certificate"
+                      title="Previous certificate"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <span className="text-[11px] text-muted-foreground tabular-nums px-1 font-mono sm:text-xs">
+                      {activePdfIndex + 1}/{pdfUrls!.length}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (activePdfIndex < pdfUrls!.length - 1) {
+                          setActivePdfIndex((i) => i + 1)
+                          setIsPdfLoading(true)
+                        }
+                      }}
+                      disabled={activePdfIndex === pdfUrls!.length - 1}
+                      className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      aria-label="Next certificate"
+                      title="Next certificate"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* PDF iframe */}
+              <div
+                id={`cert-panel-${certId}-${activePdfIndex}`}
+                role="tabpanel"
+                aria-labelledby={`cert-tab-${certId}-${activePdfIndex}`}
+                className="relative flex-1 min-h-0 h-full w-full overflow-hidden bg-muted/10"
               >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            {/* Tab Bar */}
-            <div className="flex shrink-0 items-center gap-1 border-b border-border bg-muted/30 px-3 py-2" role="tablist">
-              {pdfUrls!.map((pdf, i) => (
-                <button
-                  key={pdf.url}
-                  type="button"
-                  role="tab"
-                  onClick={() => setActivePdfIndex(i)}
-                  className={`rounded-md px-3 py-1 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    i === activePdfIndex
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
-                  aria-label={`View ${pdf.label}`}
-                  aria-selected={i === activePdfIndex}
-                >
-                  {pdf.label}
-                </button>
-              ))}
-
-              {/* Arrow navigation (right-aligned) */}
-              <div className="ml-auto flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => setActivePdfIndex((i) => Math.max(i - 1, 0))}
-                  disabled={activePdfIndex === 0}
-                  className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  aria-label="Previous certificate"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <span className="text-xs text-muted-foreground tabular-nums">
-                  {activePdfIndex + 1} / {pdfUrls!.length}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setActivePdfIndex((i) => Math.min(i + 1, pdfUrls!.length - 1))}
-                  disabled={activePdfIndex === pdfUrls!.length - 1}
-                  className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  aria-label="Next certificate"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
+                {isPdfLoading && (
+                  <div
+                    className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2.5 bg-background/80 backdrop-blur-xs text-muted-foreground animate-in fade-in duration-150"
+                    role="status"
+                    aria-live="polite"
+                    aria-label="Loading certificate preview"
+                  >
+                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-primary" />
+                    <span className="text-xs font-medium">Loading certificate document...</span>
+                  </div>
+                )}
+                <iframe
+                  key={pdfUrls![activePdfIndex].url}
+                  src={`${pdfUrls![activePdfIndex].url}#toolbar=0&navpanes=0&view=Fit`}
+                  className="h-full w-full border-0"
+                  title={`${name} — ${pdfUrls![activePdfIndex].label}`}
+                  onLoad={() => setIsPdfLoading(false)}
+                />
               </div>
-            </div>
-
-            {/* PDF iframe */}
-            <div className="flex-1 overflow-hidden bg-muted/10">
-              <iframe
-                key={pdfUrls![activePdfIndex].url}
-                src={`${pdfUrls![activePdfIndex].url}#toolbar=1&view=FitH`}
-                className="h-full w-full border-0"
-                title={`${name} — ${pdfUrls![activePdfIndex].label}`}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   )
 }
+
