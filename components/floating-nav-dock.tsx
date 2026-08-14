@@ -41,7 +41,7 @@ export function FloatingNavDock() {
           </Link>
         </DockIcon>
 
-        <Separator orientation="vertical" className="bg-foreground" />
+        <Separator orientation="vertical" className="shrink-0 h-2/3 m-auto w-px bg-foreground" />
 
         <DockIcon tooltip="LinkedIn">
           <a
@@ -69,7 +69,7 @@ export function FloatingNavDock() {
 
         <DockIcon tooltip="Facebook">
           <a
-            href="https://www.facebook.com/share/1K2hkJR1V6/"
+            href="https://www.facebook.com/clark.nox/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
@@ -99,7 +99,7 @@ export function FloatingNavDock() {
           </a>
         </DockIcon>
 
-        <Separator orientation="vertical" className="bg-foreground" />
+        <Separator orientation="vertical" className="shrink-0 h-2/3 m-auto w-px bg-foreground" />
 
         <DockIcon tooltip="Resume">
           <a
