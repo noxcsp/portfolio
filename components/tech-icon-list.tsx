@@ -13,18 +13,19 @@ import {
   SiHtml5,
   SiCss,
   SiTailwindcss,
-  SiGooglechrome,
-  SiPosthog,
   SiGoogleanalytics,
   SiNginx,
   SiGithubcopilot,
   SiExpo,
   SiCloudinary,
   SiSupabase,
+  SiClaude,
 } from "react-icons/si"
 import { Code2 } from "lucide-react"
-import { IoExtensionPuzzleOutline } from "react-icons/io5";
-import { Icons } from "@/assets/icons";
+import { IoExtensionPuzzleOutline } from "react-icons/io5"
+import { TbSeo } from "react-icons/tb"
+import { Icons } from "@/assets/icons"
+
 interface TechIconListProps {
   techStack: TechItem[]
   className?: string
@@ -33,6 +34,8 @@ interface TechIconListProps {
 export function getTechIcon(name: string): React.ReactNode {
   const normalized = name.toLowerCase().trim()
   switch (normalized) {
+    case "claude":
+      return <SiClaude className="text-[#C15F3C]"/>
     case "render":
       return <Image src={Icons.render} alt="Render" className="h-3 w-3" />
     case "vercel":
@@ -44,7 +47,7 @@ export function getTechIcon(name: string): React.ReactNode {
     case "google apps script":
       return <Image src={Icons.googleAppsScript} alt="Google Apps Script" className="h-4 w-4" />
     case "chrome extension":
-      return <IoExtensionPuzzleOutline className="text-foreground" />
+      return <IoExtensionPuzzleOutline className="text-foreground h-4 w-4" />
     case "firebase cloud messaging":
       return <Image src={Icons.firebaseCloudMessaging} alt="Firebase Cloud Messaging" className="h-4 w-4" />
     case "firebase":
@@ -52,7 +55,6 @@ export function getTechIcon(name: string): React.ReactNode {
     case "supabase":
       return <SiSupabase className="text-green-500" />
     case "gemini api":
-      return <Image src={Icons.googleGemini} alt="Gemini" className="h-3 w-3" />
     case "gemini":
       return <Image src={Icons.googleGemini} alt="Gemini" className="h-3 w-3" />
     case "antigravity ide":
@@ -91,12 +93,10 @@ export function getTechIcon(name: string): React.ReactNode {
     case "tailwind":
     case "tailwind css":
       return <SiTailwindcss className="text-[#06B6D4]" />
-    case "chrome extension":
-      return <SiGooglechrome className="text-[#4285F4]" />
-    case "posthog":
-      return <SiPosthog className="text-[#F54E00]" />
     case "google analytics":
       return <SiGoogleanalytics className="text-[#E37400]" />
+    case "seo":
+      return <TbSeo className="text-foreground h-4 w-4" />
     case "python":
       return <Image src={Icons.python} alt="Python" className="h-4 w-4" />
     default:

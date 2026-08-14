@@ -3,6 +3,7 @@ import Link from "next/link"
 import { EXPERIENCES } from "@/constants/experience"
 import { HiArrowLongLeft } from "react-icons/hi2"
 import { SkillPill } from "@/components/SkillPill"
+import { getTechIcon } from "@/components/tech-icon-list"
 
 export const metadata: Metadata = {
   title: "Experience & History",
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function ExperiencePage() {
   return (
-    <main className="relative z-10 mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-6 p-4 text-sm leading-loose sm:p-6">
+    <main className="relative z-10 mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-6 p-4 mb-8 text-sm leading-loose sm:p-6 sm:mb-16">
       {/* Header & Back Navigation */}
       <div className="flex flex-col gap-3 py-4 sm:py-6">
         <Link
@@ -76,7 +77,7 @@ export default function ExperiencePage() {
             {item.skills && item.skills.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-1">
                 {item.skills.map((skill) => (
-                  <SkillPill key={skill} name={skill} />
+                  <SkillPill key={skill} name={skill} icon={getTechIcon(skill)} />
                 ))}
               </div>
             )}

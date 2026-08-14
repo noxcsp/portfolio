@@ -41,6 +41,7 @@ export const SAMPLE_PROJECTS: ProjectItem[] = [
     status: "live",
     liveUrl: "https://www.data1asia.com",
     techStack: [
+      { name: "Claude" },
       { name: "JavaScript" },
       { name: "React" },
       { name: "Node.js" },
@@ -103,6 +104,7 @@ export const SAMPLE_PROJECTS: ProjectItem[] = [
     status: "done",
     techStack: [
       { name: "Cursor" },
+      { name: "Claude" },
       { name: "JavaScript" },
       { name: "HTML" },
       { name: "CSS" },
