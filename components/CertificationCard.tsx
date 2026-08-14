@@ -195,11 +195,12 @@ export default function CertificationCard({ certification }: CertificationCardPr
             </div>
 
             {/* Tab Bar */}
-            <div className="flex shrink-0 items-center gap-1 border-b border-border bg-muted/30 px-3 py-2">
+            <div className="flex shrink-0 items-center gap-1 border-b border-border bg-muted/30 px-3 py-2" role="tablist">
               {pdfUrls!.map((pdf, i) => (
                 <button
                   key={pdf.url}
                   type="button"
+                  role="tab"
                   onClick={() => setActivePdfIndex(i)}
                   className={`rounded-md px-3 py-1 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     i === activePdfIndex
