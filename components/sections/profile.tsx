@@ -13,6 +13,9 @@ export default function Profile() {
               width={160}
               height={160}
               priority
+              decoding="async"
+              placeholder="blur"
+              blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiMxYTIwMmMiLz48L3N2Zz4="
               className="h-full w-full object-cover"
             />
           </div>

@@ -41,6 +41,7 @@ export function FloatingNavDock() {
         <DockIcon tooltip="Home">
           <Link
             href="/"
+            prefetch={true}
             onClick={handleHomeClick}
             aria-label="Home"
             className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"

@@ -1,9 +1,24 @@
 "use client"
 
-import { GitHubCalendar } from "react-github-calendar"
+import dynamic from "next/dynamic"
 import { ExternalLink } from "lucide-react"
 import { FaGithub } from "react-icons/fa6"
 import { useHasMounted } from "@/hooks/useHasMounted"
+
+const DynamicGitHubCalendar = dynamic(
+  () => import("react-github-calendar").then((mod) => mod.GitHubCalendar),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-36 w-full items-center justify-center text-xs text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 animate-ping rounded-full bg-primary" />
+          <span>Loading activity calendar...</span>
+        </div>
+      </div>
+    ),
+  }
+)
 
 export default function GithubActivity() {
   const mounted = useHasMounted()
@@ -53,7 +68,7 @@ export default function GithubActivity() {
         <div className="relative flex flex-col rounded-2xl border border-border/50 bg-muted/10 p-4 sm:p-6 shadow-xs [&_.react-activity-calendar__footer_.react-activity-calendar__legend]:hidden [&_.react-activity-calendar__legend]:hidden [&_.react-activity-calendar__footer]:mt-4 [&_.react-activity-calendar__footer]:text-xs [&_.react-activity-calendar__footer]:text-muted-foreground/80 [&_.react-activity-calendar__footer]:font-normal">
           {mounted ? (
             <div className="w-full flex flex-col items-center justify-center [&_svg]:w-full [&_svg]:h-auto [&_svg]:max-w-full">
-              <GitHubCalendar
+              <DynamicGitHubCalendar
                 username="noxcsp"
                 colorScheme="dark"
                 showColorLegend={false}

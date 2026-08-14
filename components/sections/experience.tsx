@@ -13,6 +13,7 @@ export default function Experience() {
           </h2>
           <Link
             href="/experience"
+            prefetch={true}
             className="group inline-flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground sm:text-sm"
           >
             <span>View details</span>

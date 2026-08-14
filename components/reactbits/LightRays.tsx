@@ -156,7 +156,7 @@ const LightRays: React.FC<LightRaysProps> = ({
       if (!containerRef.current) return
 
       const renderer = new Renderer({
-        dpr: Math.min(window.devicePixelRatio, 2),
+        dpr: Math.min(window.devicePixelRatio, 1.25),
         alpha: true,
       })
       rendererRef.current = renderer
@@ -361,7 +361,21 @@ void main() {
       })
       resizeObserver.observe(containerRef.current)
 
+      const handleVisibilityChange = () => {
+        if (document.hidden) {
+          if (animationIdRef.current) {
+            cancelAnimationFrame(animationIdRef.current)
+            animationIdRef.current = null
+          }
+        } else {
+          if (!animationIdRef.current) {
+            animationIdRef.current = requestAnimationFrame(loop)
+          }
+        }
+      }
+
       window.addEventListener("resize", updatePlacement)
+      document.addEventListener("visibilitychange", handleVisibilityChange)
       updatePlacement()
       animationIdRef.current = requestAnimationFrame(loop)
 
@@ -373,6 +387,7 @@ void main() {
 
         resizeObserver.disconnect()
         window.removeEventListener("resize", updatePlacement)
+        document.removeEventListener("visibilitychange", handleVisibilityChange)
 
         if (renderer) {
           try {

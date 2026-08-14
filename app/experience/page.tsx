@@ -18,6 +18,7 @@ export default function ExperiencePage() {
       <div className="flex flex-col gap-3 py-4 sm:py-6">
         <Link
           href="/"
+          prefetch={true}
           className="group inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground sm:text-sm"
         >
           <HiArrowLongLeft className="h-3.5 w-3.5 stroke-[1.5] transition-transform group-hover:-translate-x-0.5 sm:h-4 sm:w-4" />

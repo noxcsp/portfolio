@@ -31,7 +31,11 @@ export function ProjectCard({ project, className, spotlightColor }: ProjectCardP
             src={image}
             alt={imageAlt || title}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            loading="lazy"
+            decoding="async"
+            placeholder="blur"
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDUiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjUiIGZpbGw9IiMxYTIwMmMiLz48L3N2Zz4="
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 384px"
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
             unoptimized={image.startsWith("http")}
           />

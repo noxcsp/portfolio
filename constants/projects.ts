@@ -99,7 +99,7 @@ export const SAMPLE_PROJECTS: ProjectItem[] = [
     category: ProjectCategory.FREELANCE,
     description:
       "A custom internal browser extension streamlining partner outreach automation and tracking visual correlation metrics between video campaigns and app installs.",
-    image: "/project_thumbnails/outreach-and-analytics-automation .png",
+    image: "/project_thumbnails/outreach-and-analytics-automation.png",
     imageAlt: "Outreach & Analytics Automation Tool Preview",
     status: "done",
     techStack: [

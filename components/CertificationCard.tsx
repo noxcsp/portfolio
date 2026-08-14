@@ -83,6 +83,9 @@ export default function CertificationCard({ certification }: CertificationCardPr
                     src={image}
                     alt={imageAlt || name}
                     fill
+                    loading="lazy"
+                    decoding="async"
+                    sizes="(max-width: 640px) 64px, 80px"
                     className="object-cover transition-transform duration-200 group-hover:scale-105"
                     unoptimized={image.startsWith("http")}
                   />
