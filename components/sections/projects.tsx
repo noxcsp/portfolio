@@ -12,7 +12,7 @@ export default function Projects() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {SAMPLE_PROJECTS.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard key={project.id} project={project} spotlightColor="var(--border)" />
           ))}
         </div>
       </div>

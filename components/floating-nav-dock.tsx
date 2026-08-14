@@ -17,18 +17,15 @@ import { FaGithub, FaLinkedin, FaFacebook } from "react-icons/fa6"
 import { Dock, DockIcon } from "@/components/ui/dock"
 import { Separator } from "@/components/ui/separator"
 import { useMediaQuery } from "@/hooks/useMediaQuery"
+import { useHasMounted } from "@/hooks/useHasMounted"
 
 export function FloatingNavDock() {
   const pathname = usePathname()
   const router = useRouter()
   const { setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
+  const mounted = useHasMounted()
   const isDesktop = useMediaQuery("(min-width: 1024px)", true)
   const isMobile = useMediaQuery("(max-width: 639px)", false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
     e.preventDefault()
@@ -57,7 +54,7 @@ export function FloatingNavDock() {
             prefetch={true}
             onClick={handleHomeClick}
             aria-label="Home"
-            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
+            className="flex size-full items-center justify-center rounded-full text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
             <Home className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </Link>
@@ -71,7 +68,7 @@ export function FloatingNavDock() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
-            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
+            className="flex size-full items-center justify-center rounded-full text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
             <FaLinkedin className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
@@ -83,7 +80,7 @@ export function FloatingNavDock() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
+            className="flex size-full items-center justify-center rounded-full text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
             <FaGithub className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
@@ -95,7 +92,7 @@ export function FloatingNavDock() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
-            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
+            className="flex size-full items-center justify-center rounded-full text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
             <FaFacebook className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
@@ -105,7 +102,7 @@ export function FloatingNavDock() {
           <a
             href="mailto:seanpayabyab17@gmail.com"
             aria-label="Email"
-            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
+            className="flex size-full items-center justify-center rounded-full text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
             <Mail className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
@@ -115,7 +112,7 @@ export function FloatingNavDock() {
           <a
             href="tel:+639762535224"
             aria-label="Phone"
-            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
+            className="flex size-full items-center justify-center rounded-full text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
             <Phone className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
@@ -128,7 +125,7 @@ export function FloatingNavDock() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Resume Viewer"
-            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
+            className="flex size-full items-center justify-center rounded-full text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
             <FileText className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
           </a>
@@ -138,9 +135,10 @@ export function FloatingNavDock() {
         
         <DockIcon tooltip="Toggle Theme">
           <button
+            type="button"
             onClick={toggleTheme}
             aria-label="Toggle Theme"
-            className="flex items-center justify-center text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
+            className="flex size-full items-center justify-center rounded-full text-foreground lg:hover:text-foreground/80 [@media(hover:none)]:hover:text-foreground transition-colors"
           >
             {mounted && resolvedTheme === "dark" ? (
               <Sun className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />

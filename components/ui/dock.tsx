@@ -122,7 +122,6 @@ const DockIcon = ({
   ...props
 }: DockIconProps) => {
   const ref = useRef<HTMLDivElement>(null)
-  const padding = Math.max(6, size * 0.2)
   const defaultMouseX = useMotionValue(Infinity)
 
   const distanceCalc = useTransform(mouseX ?? defaultMouseX, (val: number) => {
@@ -148,7 +147,7 @@ const DockIcon = ({
   return (
     <motion.div
       ref={ref}
-      style={{ width: scaleSize, height: scaleSize, padding }}
+      style={{ width: scaleSize, height: scaleSize }}
       className={cn(
         "group relative flex aspect-square cursor-pointer items-center justify-center rounded-full transition-colors lg:hover:bg-foreground/10 [@media(hover:none)]:hover:bg-transparent",
         className
@@ -160,7 +159,7 @@ const DockIcon = ({
           {tooltip}
         </span>
       )}
-      <div className="flex items-center justify-center">{children}</div>
+      <div className="flex size-full items-center justify-center">{children}</div>
     </motion.div>
   )
 }
