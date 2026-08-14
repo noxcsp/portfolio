@@ -5,16 +5,14 @@ export type ProjectStatus = "live" | "in progress" | "done"
 export enum ProjectCategory {
   CAPSTONE = "Capstone Project",
   PERSONAL = "Personal Project",
+  INTERNSHIP = "Internship Project",
   WORK = "Work Project",
   FREELANCE = "Freelance Project",
 }
 
 export interface TechItem {
-  /** Name of the technology (e.g. "React", "TypeScript") */
   name: string
-  /** Optional icon element (e.g. SVG or React Icon). Omit if using iconUrl or text fallback. */
   icon?: ReactNode
-  /** Optional image URL/path for logo icon */
   iconUrl?: string
 }
 
@@ -35,7 +33,7 @@ export const SAMPLE_PROJECTS: ProjectItem[] = [
   {
     id: "dataone-cms",
     title: "DataOne Asia Philippines",
-    category: ProjectCategory.WORK,
+    category: ProjectCategory.INTERNSHIP,
     description:
       "A production-ready enterprise company website and custom CMS accelerating content workflow efficiency and boosting brand visibility.",
     image: "/project_thumbnails/dataone-asia-philippines.png",
@@ -84,6 +82,7 @@ export const SAMPLE_PROJECTS: ProjectItem[] = [
     image: "/project_thumbnails/phase.png",
     imageAlt: "Phase Subscription Tracker Preview",
     status: "in progress",
+    githubUrl: "https://github.com/noxcsp/Phase",
     techStack: [
       { name: "Next.js" },
       { name: "TypeScript" },

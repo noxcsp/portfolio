@@ -6,7 +6,8 @@ import { ProjectStatusBadge } from "@/components/project-status-badge"
 import { TechIconList } from "@/components/tech-icon-list"
 import { Separator } from "@/components/ui/separator"
 import type { ProjectItem } from "@/constants/projects"
-import { ArrowUpRight } from "lucide-react"
+import { ArrowUpRight, ExternalLink } from "lucide-react"
+import { FaGithub } from "react-icons/fa6"
 import { cn } from "@/lib/utils"
 
 interface ProjectCardProps {
@@ -16,7 +17,7 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, className, spotlightColor }: ProjectCardProps) {
-  const { title, category, description, image, imageAlt, status, techStack, liveUrl } = project
+  const { title, category, description, image, imageAlt, status, techStack, liveUrl, githubUrl } = project
 
   return (
     <SpotlightCard
@@ -34,6 +35,19 @@ export function ProjectCard({ project, className, spotlightColor }: ProjectCardP
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
             unoptimized={image.startsWith("http")}
           />
+          {githubUrl && (
+            <a
+              href={githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/repo absolute top-2.5 right-2.5 z-10 inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-background/80 px-2.5 py-1 text-xs font-medium text-muted-foreground backdrop-blur-md transition-all hover:border-primary/50 hover:bg-background/95 hover:text-foreground shadow-xs"
+              aria-label={`View ${title} GitHub repository`}
+            >
+              <FaGithub className="h-3 w-3 text-foreground" />
+              <span>GitHub</span>
+              <ExternalLink className="h-3 w-3 transition-transform duration-200 ease-out group-hover/repo:translate-x-0.5 group-hover/repo:-translate-y-0.5" />
+            </a>
+          )}
         </div>
 
         {/* 2. Status & Category Badges */}
@@ -78,9 +92,11 @@ export function ProjectCard({ project, className, spotlightColor }: ProjectCardP
               <span>View Live Website</span>
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 ease-out group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
             </Link>
+          ) : (githubUrl ? (
+            <span className="text-xs text-muted-foreground font-mono">Public Repository</span>
           ) : (
-            <span className="text-xs text-muted-foreground font-mono">{category}</span>
-          )}
+            <span className="text-xs text-muted-foreground font-mono">Private Repository</span>
+          ))}
         </div>
       </div>
     </SpotlightCard>
