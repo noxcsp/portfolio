@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import { flushSync } from "react-dom"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
@@ -36,8 +37,53 @@ export function FloatingNavDock() {
     }
   }
 
-  const toggleTheme = () => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark")
+  const toggleTheme = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    const newTheme = resolvedTheme === "dark" ? "light" : "dark"
+
+    if (
+      typeof document === "undefined" ||
+      !("startViewTransition" in document) ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setTheme(newTheme)
+      return
+    }
+
+    let x = window.innerWidth / 2
+    let y = window.innerHeight / 2
+
+    if (e?.currentTarget) {
+      const rect = e.currentTarget.getBoundingClientRect()
+      x = rect.left + rect.width / 2
+      y = rect.top + rect.height / 2
+    }
+
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    )
+
+    const transition = document.startViewTransition(() => {
+      flushSync(() => {
+        setTheme(newTheme)
+      })
+    })
+
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 750,
+          easing: "ease-in-out",
+          pseudoElement: "::view-transition-new(root)",
+        } as KeyframeAnimationOptions
+      )
+    })
   }
 
   return (
