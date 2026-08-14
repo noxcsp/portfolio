@@ -1,12 +1,22 @@
+"use client"
+
 import Image from "next/image"
-import { BadgeCheck, GraduationCap,} from "lucide-react"
+import { BadgeCheck, GraduationCap } from "lucide-react"
+import { motion, useReducedMotion } from "motion/react"
 
 export default function Profile() {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <section className="w-full py-4 sm:py-6">
       <div className="flex flex-col gap-5 sm:gap-6">
         <div className="flex items-center gap-4 sm:gap-5">
-          <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-full border border-border shadow-sm sm:h-40 sm:w-40">
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94 }}
+            animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+            transition={{ duration: shouldReduceMotion ? 0.2 : 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="relative h-32 w-32 shrink-0 overflow-hidden rounded-full border border-border shadow-sm sm:h-40 sm:w-40"
+          >
             <Image
               src="/profile.png"
               alt="Clark Sean Payabyab"
@@ -18,8 +28,17 @@ export default function Profile() {
               blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiMxYTIwMmMiLz48L3N2Zz4="
               className="h-full w-full object-cover"
             />
-          </div>
-          <div className="flex flex-col justify-center gap-1.5">
+          </motion.div>
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }}
+            animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            transition={{
+              duration: shouldReduceMotion ? 0.2 : 0.45,
+              delay: shouldReduceMotion ? 0 : 0.1,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="flex flex-col justify-center gap-1.5"
+          >
             <div className="flex items-center gap-1.5">
               <span className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
                 Clark Sean Payabyab
@@ -38,17 +57,34 @@ export default function Profile() {
               <GraduationCap className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
               <span className="font-medium group-hover:underline">NU MOA</span>
             </a>
-          </div>
+          </motion.div>
         </div>
 
-        <div>
+        <motion.div
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }}
+          animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+          transition={{
+            duration: shouldReduceMotion ? 0.2 : 0.45,
+            delay: shouldReduceMotion ? 0 : 0.2,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
           <h1 className="text-2xl font-normal tracking-tight text-foreground sm:text-3xl md:text-4xl">
             Full-Stack Web Developer
             <span className="text-muted-foreground"> &mdash; MERN</span>
           </h1>
-        </div>
+        </motion.div>
 
-        <div className="text-light space-y-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+        <motion.div
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }}
+          animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+          transition={{
+            duration: shouldReduceMotion ? 0.2 : 0.45,
+            delay: shouldReduceMotion ? 0 : 0.3,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="text-light space-y-2 text-sm leading-relaxed text-muted-foreground sm:text-base"
+        >
           <p>
             I&apos;m a full-stack developer leveraging AI-assisted workflows
             alongside my core stack in React, Next.js, React Native, and Node.js
@@ -57,7 +93,7 @@ export default function Profile() {
             new technologies, embrace fast-paced environments, and contribute to
             production-grade software.
           </p>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

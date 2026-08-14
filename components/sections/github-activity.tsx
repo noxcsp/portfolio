@@ -5,6 +5,7 @@ import { useTheme } from "next-themes"
 import { ExternalLink } from "lucide-react"
 import { FaGithub } from "react-icons/fa6"
 import { useHasMounted } from "@/hooks/useHasMounted"
+import { MotionSection } from "@/components/MotionSection"
 
 const DynamicGitHubCalendar = dynamic(
   () => import("react-github-calendar").then((mod) => mod.GitHubCalendar),
@@ -44,7 +45,7 @@ export default function GithubActivity() {
   }
 
   return (
-    <section className="w-full py-4 sm:py-6">
+    <MotionSection>
       <div className="flex flex-col gap-5 sm:gap-6">
         {/* Section Header */}
         <div className="flex items-center justify-between">
@@ -95,6 +96,6 @@ export default function GithubActivity() {
           )}
         </div>
       </div>
-    </section>
+    </MotionSection>
   )
 }
